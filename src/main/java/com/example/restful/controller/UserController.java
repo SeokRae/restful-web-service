@@ -52,4 +52,10 @@ public class UserController {
 
         return ResponseEntity.created(location).build();
     }
+
+    @DeleteMapping(path = "/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+        userDaoService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
