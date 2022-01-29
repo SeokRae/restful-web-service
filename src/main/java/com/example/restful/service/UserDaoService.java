@@ -23,7 +23,7 @@ public class UserDaoService {
     }
 
     public User save(User user) {
-        if(users.contains(user)) {
+        if (users.contains(user)) {
             throw new DuplicateUserIdException("이미 존재하는 Id 입니다.");
         }
         users.add(user);
@@ -35,5 +35,12 @@ public class UserDaoService {
                 .filter(user -> user.match(id))
                 .findAny()
                 .orElseThrow(() -> new NotFoundUserException("존재하지 않는 사용자 입니다."));
+    }
+
+    public void deleteById(int id) {
+        if(users.stream().noneMatch(user -> user.match(id))) {
+            throw new NotFoundUserException("존재하지 않는 사용자입니다.");
+        }
+        users.removeIf(user -> user.match(id));
     }
 }
