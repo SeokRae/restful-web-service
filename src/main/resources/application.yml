@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: restful-service
+  jpa:
+    open-in-view: false
 
 logging:
   level:
