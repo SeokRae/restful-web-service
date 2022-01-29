@@ -6,6 +6,8 @@ spring:
     name: restful-service
   jpa:
     open-in-view: false
+  messages:
+    basename: messages
 
 logging:
   level:
