@@ -15,6 +15,7 @@ import java.util.List;
 // 의존성 주입은 생성자, setter를 통한 주입이 가능하다.
 @RestController
 public class UserController {
+
     private final UserDaoService userDaoService;
 
     public UserController(UserDaoService userDaoService) {
