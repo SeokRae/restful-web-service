@@ -21,6 +21,10 @@ public class UserController {
         this.userDaoService = userDaoService;
     }
 
+    // curl -i -X GET http://localhost:8888/users \
+    //      -H 'Accept: application/json'
+    // curl -i -X GET http://localhost:8888/users \
+    //      -H 'Accept: application/xml'
     // curl -i -X GET http://localhost:8888/users
     // GET /users
     @GetMapping(path = "/users")
