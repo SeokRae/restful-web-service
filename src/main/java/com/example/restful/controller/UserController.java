@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class UserController {
     //   -H 'Content-Type: application/json' \
     //   -d '{"id":"3","name":"user3","joinDate":"2022-01-29T10:33:03.979+00:00"}'
     @PostMapping(path = "/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         User saveUser = userDaoService.save(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -53,6 +54,7 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
+    // curl -i -X DELETE http://localhost:8888/users/1
     @DeleteMapping(path = "/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         userDaoService.deleteById(id);
