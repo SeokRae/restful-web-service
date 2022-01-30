@@ -66,9 +66,23 @@
         </dependency>
 
         <!-- Monitoring actuator -->
+        <!-- http://localhost:8888/actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- HAL Browser -> 최신 버전 explorer -->
+        <!-- http://localhost:8888/ -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-rest-hal-explorer</artifactId>
+        </dependency>
+
+        <!-- security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>

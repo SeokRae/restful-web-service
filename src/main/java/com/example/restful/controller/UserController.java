@@ -54,6 +54,7 @@ public class UserController {
 
     // curl -i -X GET http://localhost:8888/users/1
     // GET /users/1
+    // curl -i -X GET http://localhost:8888/users/1
     @GetMapping(path = "/users/{id}")
     public ResponseEntity<EntityModel<User>> getUser(@PathVariable int id) {
         User findUser = userDaoService.findById(id);
