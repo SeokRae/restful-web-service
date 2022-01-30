@@ -8,11 +8,11 @@ import org.apache.coyote.Response;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public class UserJpaController {
         return userRepository.findAll();
     }
 
-    // curl -i -X GET http://localhost:8888/jpa/users/1
+    // curl -i -X GET http://localhost:8888/jpa/users/1001
     @GetMapping(path = "/users/{id}")
     public ResponseEntity<EntityModel<User>> getUser(@PathVariable int id) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -46,5 +46,26 @@ public class UserJpaController {
         entityModel.add(linkTo.withRel("all-users"));
 
         return ResponseEntity.ok(entityModel);
+    }
+
+    // curl -i -X DELETE http://localhost:8888/jpa/users/1001
+    @DeleteMapping(path = "/users/{id}")
+    public void deleteUser(@PathVariable int id) {
+        userRepository.deleteById(id);
+    }
+
+    // curl -i -X POST http://localhost:8888/jpa/users \
+    // -H 'Content-Type: application/json' \
+    // -d '{"name":"user3","joinDate":"2022-01-29T10:33:03.979+00:00","password":"1234","ssn":"123456-123456"}'
+    @PostMapping(path = "/users")
+    public ResponseEntity<User> postUser(@Valid @RequestBody User user) {
+        User savedUser = userRepository.save(user);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 }
