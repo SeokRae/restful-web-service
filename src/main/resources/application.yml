@@ -8,7 +8,6 @@ spring:
     open-in-view: false
   messages:
     basename: messages
-
 logging:
   level:
     org.springframework: debug
