@@ -6,8 +6,17 @@ spring:
     name: restful-service
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
   messages:
     basename: messages
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
 
 management:
   endpoints:
@@ -19,3 +28,4 @@ management:
 logging:
   level:
     org.springframework: debug
+    org.hibernate.SQL: debug
