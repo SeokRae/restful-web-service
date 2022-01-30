@@ -1,7 +1,9 @@
-package com.example.restful.user;
+package com.example.restful.domain;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

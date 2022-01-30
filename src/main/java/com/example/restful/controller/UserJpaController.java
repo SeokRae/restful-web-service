@@ -1,10 +1,11 @@
 package com.example.restful.controller;
 
+import com.example.restful.domain.Post;
+import com.example.restful.domain.User;
 import com.example.restful.exception.NotFoundUserException;
+import com.example.restful.repository.PostRepository;
 import com.example.restful.repository.UserRepository;
-import com.example.restful.user.User;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 public class UserJpaController {
 
-    public final UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     // curl -i -X GET http://localhost:8888/jpa/users
     @GetMapping(path = "/users")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userRepository.findAll());
     }
 
     // curl -i -X GET http://localhost:8888/jpa/users/1001
@@ -37,7 +39,7 @@ public class UserJpaController {
     public ResponseEntity<EntityModel<User>> getUser(@PathVariable int id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
-        if(optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty()) {
             throw new NotFoundUserException(String.format("ID[%s] not found", id));
         }
 
@@ -64,6 +66,38 @@ public class UserJpaController {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
+    // curl -i -X GET http://localhost:8888/jpa/users/1001/posts
+    @GetMapping(path = "/users/{id}/posts")
+    public List<Post> getAllPostsByUser(@PathVariable int id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (user.isEmpty()) {
+            throw new NotFoundUserException(String.format("ID[%s] not found", id));
+        }
+
+        return user.get().getPosts();
+    }
+
+    // curl -i -X POST http://localhost:8888/jpa/users/1001/posts \
+    // -H 'Content-Type: application/json'
+    // -d '{"description": "posting!!!"}'
+    @PostMapping(path = "/users/{id}/posts")
+    public ResponseEntity<Post> createPost(@PathVariable int id, @RequestBody Post post) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new NotFoundUserException(String.format("ID[%s] not found", id));
+        }
+        post.setUser(user.get());
+        Post savedPost = postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedPost.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();
