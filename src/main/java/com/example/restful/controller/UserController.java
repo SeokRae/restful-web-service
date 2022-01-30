@@ -1,8 +1,8 @@
 package com.example.restful.controller;
 
+import com.example.restful.domain.User;
 import com.example.restful.exception.NotFoundUserException;
 import com.example.restful.service.UserDaoService;
-import com.example.restful.user.User;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
