@@ -3,9 +3,11 @@ package com.example.restful.controller;
 import com.example.restful.exception.NotFoundUserException;
 import com.example.restful.service.UserDaoService;
 import com.example.restful.user.User;
+import com.example.restful.user.UserV2;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +32,7 @@ public class AdminUserController {
     //      -H 'Accept: application/xml'
     // curl -i -X GET http://localhost:8888/admin/users
     // GET /users
-    @GetMapping(path = "/users")
+    @GetMapping(path = "/v1/users")
     public MappingJacksonValue getAllUsers() {
         List<User> all = userDaoService.findAll();
 
@@ -46,10 +48,10 @@ public class AdminUserController {
         return mappingJacksonValue;
     }
 
-    // curl -i -X GET http://localhost:8888/admin/users/1
+    // curl -i -X GET http://localhost:8888/admin/v1/users/1
     // GET /users/1
-    @GetMapping(path = "/users/{id}")
-    public MappingJacksonValue getUser(@PathVariable int id) {
+    @GetMapping(path = "/users/{id}", params = "version=1")
+    public MappingJacksonValue getUser(@PathVariable Integer id) {
         User findUser = userDaoService.findById(id);
         if (findUser == null) {
             throw new NotFoundUserException(String.format("ID[%s] not found", id));
@@ -62,6 +64,31 @@ public class AdminUserController {
                 .addFilter("UserInfo", filter);
 
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(findUser);
+        mappingJacksonValue.setFilters(filterProvider);
+
+        return mappingJacksonValue;
+    }
+    // curl -i -X GET http://localhost:8888/admin/v2/users/1
+    // GET /users/1
+    // @GetMapping(path = "/v2/users/{id}")
+    @GetMapping(path = "/users/{id}", params = "version=2")
+    public MappingJacksonValue getUserV2(@PathVariable Integer id) {
+        User findUser = userDaoService.findById(id);
+        if (findUser == null) {
+            throw new NotFoundUserException(String.format("ID[%s] not found", id));
+        }
+
+        UserV2 userV2 = new UserV2();
+        BeanUtils.copyProperties(findUser, userV2);
+        userV2.setGrade("VIP");
+
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter
+                .filterOutAllExcept("id", "name", "joinDate", "password", "ssn", "grade");
+
+        FilterProvider filterProvider = new SimpleFilterProvider()
+                .addFilter("UserInfoV2", filter);
+
+        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(userV2);
         mappingJacksonValue.setFilters(filterProvider);
 
         return mappingJacksonValue;

@@ -32,15 +32,15 @@ public class UserDaoService {
 
     public User findById(int id) {
         return users.stream()
-                .filter(user -> user.match(id))
+                .filter(user -> user.getId() == id)
                 .findAny()
                 .orElseThrow(() -> new NotFoundUserException("존재하지 않는 사용자 입니다."));
     }
 
     public void deleteById(int id) {
-        if(users.stream().noneMatch(user -> user.match(id))) {
+        if(users.stream().noneMatch(user -> user.getId() == id)) {
             throw new NotFoundUserException("존재하지 않는 사용자입니다.");
         }
-        users.removeIf(user -> user.match(id));
+        users.removeIf(user -> user.getId() == id);
     }
 }
