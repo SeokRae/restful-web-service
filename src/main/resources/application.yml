@@ -8,6 +8,14 @@ spring:
     open-in-view: false
   messages:
     basename: messages
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # 노출할 수 있는 모든 경로를 설정해서 어떤 것이 있는지 확인
+        include: "*"
+
 logging:
   level:
     org.springframework: debug
