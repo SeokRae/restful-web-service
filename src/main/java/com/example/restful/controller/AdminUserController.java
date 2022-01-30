@@ -32,7 +32,7 @@ public class AdminUserController {
     //      -H 'Accept: application/xml'
     // curl -i -X GET http://localhost:8888/admin/users
     // GET /users
-    @GetMapping(path = "/v1/users")
+    @GetMapping(path = "/users")
     public MappingJacksonValue getAllUsers() {
         List<User> all = userDaoService.findAll();
 
